@@ -1,0 +1,36 @@
+Sub SwapFirstnameWithLastname()
+
+    Dim myOlApp As Application
+    Dim myNameSpace As NameSpace
+
+    Dim myAllFolders As Folders
+    Dim myPersFolder As MAPIFolder
+    Dim mySrcFolder As MAPIFolder
+    Dim myDestFolder As MAPIFolder
+    Dim myItems As Items
+    Dim myContact As ContactItem
+    Dim ConName As String
+    
+    Set myOlApp = CreateObject("Outlook.Application")
+    Set myNameSpace = myOlApp.GetNamespace("MAPI")
+    
+    Set myAllFolders = myNameSpace.Folders
+    ' Change if you've a non-german Outlook
+    Set myPersFolder = myAllFolders.Item("Persönliche Ordner")
+    ' Change if you've a non-german Outlook
+    Set mySrcFolder = myPersFolder.Folders.Item("Kontakte")
+    
+    Set myDestFolder = mySrcFolder.CopyTo(myPersFolder)
+    myDestFolder.name = "Nokia6230 Addressbook"
+    
+    ' Place all contacts in new folder and swap names
+    Set myItems = myDestFolder.Items
+    
+    For Each myContact In myItems
+        ConName = myContact.LastName
+        myContact.LastName = myContact.FirstName
+        myContact.FirstName = ConName
+        myContact.Save
+    Next myContact
+    
+End Sub
